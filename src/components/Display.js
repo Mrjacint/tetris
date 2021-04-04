@@ -1,5 +1,7 @@
+import { StyledDisplay } from "./styles/StyledDisplay";
+
 const Display = ({ gameOver, text }) => {
-  return <div>{text}</div>;
+  return <StyledDisplay>{text}</StyledDisplay>;
 };
 
 export default Display;
