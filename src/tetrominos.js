@@ -50,7 +50,7 @@ export const TETROMINOS = {
   },
   Z: {
     shape: [
-      ["z", "Z", 0],
+      ["Z", "Z", 0],
       [0, "Z", "Z"],
       [0, 0, 0],
     ],
