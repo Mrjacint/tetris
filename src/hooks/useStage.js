@@ -26,8 +26,6 @@ export const useStage = (player, resetPlayer) => {
 
       // Then draw the tetromino
       player.tetromino.forEach((row, y) => {
-        console.log(player);
-
         row.forEach((value, x) => {
           if (value !== 0) {
             newStage[y + player.pos.y][x + player.pos.x] = [
