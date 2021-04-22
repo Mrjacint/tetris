@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { createStage } from "../gameHelpers";
+import { createStage, checkCollision } from "../gameHelpers";
 
-// Styled componenet
+// Styled Components
 import { StyledTetrisWrapper, StyledTetris } from "./styles/StyledTetris";
 
-// Hooks
+// Custom Hooks
 import { usePlayer } from "../hooks/usePlayer";
 import { useStage } from "../hooks/useStage";
 
@@ -18,23 +18,37 @@ const Tetris = () => {
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
 
-  const [player, updatePlayerPos, resetPLayer] = usePlayer();
-  const [stage, setStage] = useStage(player, resetPLayer);
+  const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
+  const [stage, setStage] = useStage(player, resetPlayer);
 
   console.log("re-render");
 
   const movePlayer = (dir) => {
-    updatePlayerPos({ x: dir, y: 0 });
+    if (!checkCollision(player, stage, { x: dir, y: 0 })) {
+      updatePlayerPos({ x: dir, y: 0 });
+    }
   };
 
   const startGame = () => {
-    // Reset everiting
+    console.log("test");
+    // Reset everything
     setStage(createStage());
-    resetPLayer();
+    resetPlayer();
+    setGameOver(false);
   };
 
   const drop = () => {
-    updatePlayerPos({ x: 0, y: 1, collided: false });
+    if (!checkCollision(player, stage, { x: 0, y: 1 })) {
+      updatePlayerPos({ x: 0, y: 1, collided: false });
+    } else {
+      // Game Over
+      if (player.pos.y < 1) {
+        console.log("GAME OVER!!!");
+        setGameOver(true);
+        setDropTime(null);
+      }
+      updatePlayerPos({ x: 0, y: 0, collided: true });
+    }
   };
 
   const dropPlayer = () => {
@@ -44,14 +58,13 @@ const Tetris = () => {
   const move = ({ keyCode }) => {
     if (!gameOver) {
       if (keyCode === 37) {
-        // Check if left arrow pushed down (37 the key code for left arrow)
         movePlayer(-1);
       } else if (keyCode === 39) {
-        // Check if right arrow pushed down (39 the key code for right arrow)
         movePlayer(1);
       } else if (keyCode === 40) {
-        // Check if down arrow pushed down (40 the key code for down arrow)
         dropPlayer();
+      } else if (keyCode === 38) {
+        playerRotate(stage, 1);
       }
     }
   };
